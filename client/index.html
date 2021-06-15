@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>YOUTUBE SCRAPPER/title>
+</head>
+
+<body >
+   
+
+    <!-- style... to do later -->
+    <!-- add a nice boostrap classes and labels appropriately -->
+    <!-- add a matching background colors -->
+
+    <h1>Web_Scrapping_fullstack</h1>
+    <h4>Add a new creator here</h4>
+    <input class= 'channel-input' type="text" placeholder="Paste Youtube Url Here">
+    <button type="submit" onClick="submitChannel()" > Submit </button>
+    <h4></h4>
+    <div class="container"></div>
+
+<script>
+
+    // At the click of the submit button stringify the input and send it to /creators api using fetch
+    async function submitChannel(){
+                const channelURL = document.querySelector('.channel-input').value; //this returns the value of the element .channel-input class
+                await  fetch ('http://localhost:3000/creators', {
+                    method:'POST',
+                    headers: {
+                    'content-type': 'application/json'
+                    },
+                    body: JSON.stringify({channelURL})
+                } )
+     }
+    //  template for creating elements
+    function newElements(type, attrs ={}) {
+                const e1 = document.createElement(type);
+                for ( let attr in attrs){
+                    const value = attrs[attr];
+                    if ( attr == 'innerText') e1.innerText = value;
+                    else e1.setAttribute(attr, value);
+                }
+                return e1
+            }
+    // loading the elements from the db
+    async function loadCreators() {
+            const res = await fetch('http://localhost:3000/creators');
+            const creators = await res.json();
+
+            const container = document.querySelector('.container');
+            
+            creators.forEach( creator => {
+                
+                const card = newElements('div', {class: 'card'});
+                const title = newElements('h4', {innerText: creator.name});
+                const img= newElements('img', {src: creator.img});
+                card.appendChild(title);
+                card.appendChild(img);
+                container.appendChild(card);       
+            }
+        )       
+    }
+        loadCreators();
+
+</script>
+
+
+
+</body>
+</html>
